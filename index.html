@@ -8,15 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b0d12;
-    --bg-panel:#15171f;
-    --bg-panel2:#1b1e28;
-    --line:rgba(255,255,255,0.09);
-    --text:#f3efe4;
-    --muted:#948d7d;
-    --gold:#c9a24b;
-    --gold-soft:rgba(201,162,75,0.12);
-    --teal:#6f9c93;
+    --bg:#060606;
+    --bg-panel:#151515;
+    --bg-panel2:#1e1e1e;
+    --line:rgba(255,255,255,0.1);
+    --text:#f2f2f2;
+    --muted:#9a9a9a;
+    --gold:#ffffff;
+    --gold-soft:rgba(255,255,255,0.1);
+    --teal:#6b6b6b;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -26,22 +26,90 @@
   button{font-family:inherit;}
   .wrap{max-width:780px; margin:0 auto; padding:0 22px; position:relative; z-index:2;}
 
-  .orb{position:fixed; border-radius:50%; filter:blur(70px); opacity:0.26; z-index:0; pointer-events:none;}
-  .orb1{width:340px; height:340px; background:var(--gold); top:-100px; left:-80px; animation:float1 16s ease-in-out infinite;}
-  .orb2{width:280px; height:280px; background:var(--teal); bottom:5%; right:-60px; animation:float2 20s ease-in-out infinite;}
-  @keyframes float1{0%,100%{transform:translate(0,0);} 50%{transform:translate(40px,60px);}}
-  @keyframes float2{0%,100%{transform:translate(0,0);} 50%{transform:translate(-30px,-50px);}}
-  .spotlight{position:fixed; inset:0; background:radial-gradient(500px circle at var(--x,50%) var(--y,50%), rgba(201,162,75,0.06), transparent 60%); pointer-events:none; z-index:1;}
+  .orb{position:fixed; border-radius:50%; filter:blur(90px); z-index:0; pointer-events:none; mix-blend-mode:screen;}
+  .orb1{width:420px; height:420px; background:radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%); top:-140px; left:-100px; animation:float1 18s ease-in-out infinite;}
+  .orb2{width:380px; height:380px; background:radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%); bottom:0%; right:-120px; animation:float2 22s ease-in-out infinite;}
+  .orb3{width:300px; height:300px; background:radial-gradient(circle, rgba(255,255,255,0.07), transparent 70%); top:40%; left:50%; animation:float3 26s ease-in-out infinite;}
+  @keyframes float1{0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(60px,90px) scale(1.15);}}
+  @keyframes float2{0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-50px,-70px) scale(1.1);}}
+  @keyframes float3{0%,100%{transform:translate(-50%,-50%) rotate(0deg);} 50%{transform:translate(-50%,-50%) rotate(180deg) scale(1.2);}}
+  .grain{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.035; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .scroll-progress{position:fixed; top:0; left:0; height:2.5px; background:linear-gradient(90deg, transparent, #ffffff, transparent); z-index:200; width:0%; transition:width 0.1s ease-out;}
+  .spotlight{position:fixed; inset:0; background:radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.05), transparent 60%); pointer-events:none; z-index:1;}
 
-  nav{position:sticky; top:0; z-index:30; background:rgba(11,13,18,0.85); border-bottom:1px solid var(--line); backdrop-filter:blur(10px);}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:16px 22px; overflow-x:auto;}
+  nav{position:sticky; top:0; z-index:30; background:rgba(6,6,6,0.7); border-bottom:1px solid var(--line); backdrop-filter:blur(16px) saturate(140%);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:16px 22px;}
   .brand{font-family:'Playfair Display',serif; font-weight:700; font-size:1.1rem; white-space:nowrap;}
   .brand em{color:var(--gold); font-style:normal;}
-  nav ul{display:flex; gap:18px; list-style:none; font-size:0.83rem; white-space:nowrap;}
-  nav ul li a{color:var(--muted); position:relative; padding-bottom:3px; transition:color 0.3s ease;}
-  nav ul li a::after{content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:var(--gold); transition:width 0.4s cubic-bezier(.4,0,.2,1);}
-  nav ul li a:hover, nav ul li a.active{color:var(--text);}
-  nav ul li a:hover::after, nav ul li a.active::after{width:100%;}
+  .hamburger{background:none; border:1px solid var(--line); color:var(--text); width:40px; height:40px; border-radius:10px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:border-color 0.3s ease, background 0.3s ease, transform 0.3s cubic-bezier(.16,1,.3,1);}
+  .hamburger:hover{border-color:rgba(255,255,255,0.4); background:var(--gold-soft); transform:scale(1.08) rotate(90deg);}
+
+  /* SIDEBAR */
+  #sidebarOverlay{position:fixed; inset:0; background:rgba(5,6,9,0.6); backdrop-filter:blur(2px); z-index:60; opacity:0; pointer-events:none; transition:opacity 0.35s ease;}
+  #sidebarOverlay.show{opacity:1; pointer-events:auto;}
+  #sidebar{
+    position:fixed; top:0; left:0; height:100%; width:270px; max-width:82vw; z-index:70;
+    background:linear-gradient(180deg, var(--bg-panel2), var(--bg));
+    border-right:1px solid var(--line);
+    transform:translateX(-100%); transition:transform 0.4s cubic-bezier(.4,0,.2,1);
+    display:flex; flex-direction:column; overflow-y:auto;
+  }
+  #sidebar.show{transform:translateX(0);}
+  .sidebar-head{padding:26px 20px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px;}
+  .sidebar-avatar{
+    width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #ffffff, #000000); flex-shrink:0;
+    position:relative; cursor:pointer; overflow:hidden; background-size:cover; background-position:center;
+  }
+  .sidebar-avatar .cam-badge{position:absolute; bottom:-2px; right:-2px; width:18px; height:18px; border-radius:50%; background:var(--bg); border:1.5px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:0.55rem;}
+  .sidebar-avatar input[type="file"]{display:none;}
+
+  /* LOCK SCREEN */
+  #lockScreen{
+    position:fixed; inset:0; z-index:999; background:radial-gradient(circle at 30% 20%, rgba(201,162,75,0.12), transparent 55%), var(--bg);
+    display:flex; align-items:center; justify-content:center; padding:24px; transition:opacity 0.5s ease, visibility 0.5s ease;
+  }
+  #lockScreen.hide{opacity:0; visibility:hidden; pointer-events:none;}
+  .lock-card{width:100%; max-width:320px; text-align:center;}
+  .lock-avatar{width:64px; height:64px; border-radius:16px; margin:0 auto 18px; background:linear-gradient(135deg, #ffffff, #000000);}
+  .lock-card .school{color:var(--gold); font-size:0.75rem; letter-spacing:0.06em; margin-bottom:6px;}
+  .lock-card h1{font-size:1.5rem; margin-bottom:10px;}
+  .lock-card p.sub{color:var(--muted); font-size:0.88rem; margin-bottom:26px;}
+  .lock-input{
+    width:100%; background:var(--bg-panel); border:1px solid var(--line); color:var(--text); padding:14px 16px;
+    border-radius:10px; font-size:1.3rem; letter-spacing:0.4em; text-align:center; outline:none; transition:border-color 0.3s ease;
+  }
+  .lock-input:focus{border-color:var(--gold);}
+  .lock-input.shake{animation:shakeErr 0.4s ease;}
+  @keyframes shakeErr{0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);}}
+  .lock-error{color:#e0685f; font-size:0.8rem; margin-top:10px; min-height:1.2em;}
+  .lock-btn{width:100%; margin-top:16px; background:var(--gold); color:var(--bg); border:none; padding:13px; border-radius:10px; font-size:0.92rem; font-weight:600; cursor:pointer; transition:transform 0.25s ease;}
+  .btn-primary, .cetak-btn, .lock-btn{position:relative; overflow:hidden;}
+  .btn-primary::after, .cetak-btn::after, .lock-btn::after{
+    content:''; position:absolute; top:0; left:-60%; width:40%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(0,0,0,0.15), transparent);
+    transform:skewX(-20deg); transition:left 0.6s ease;
+  }
+  .btn-primary:hover::after, .cetak-btn:hover::after, .lock-btn:hover::after{left:120%;}
+  .lock-btn:hover{transform:translateY(-2px);}
+  .lock-note{margin-top:22px; font-size:0.72rem; color:var(--muted); line-height:1.5;}
+  .sidebar-head .school{font-size:0.68rem; color:var(--muted); letter-spacing:0.03em;}
+  .sidebar-head .kelas{font-family:'Playfair Display',serif; font-weight:700; font-size:1.05rem;}
+  .sidebar-close{margin-left:auto; background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer;}
+  .sidebar-group{padding:18px 12px 6px;}
+  .sidebar-group-label{padding:0 10px 8px; font-size:0.68rem; letter-spacing:0.08em; color:var(--muted); text-transform:uppercase;}
+  .sidebar-link{
+    display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:10px;
+    color:var(--text); font-size:0.9rem; cursor:pointer; transition:background 0.25s ease, color 0.25s ease;
+    border-left:2px solid transparent;
+  }
+  .sidebar-link:hover{background:var(--gold-soft);}
+  .sidebar-link.active{background:var(--gold-soft); border-left:2px solid var(--gold); color:var(--gold);}
+  .sidebar-link .sic{width:22px; text-align:center; font-size:1.02rem; flex-shrink:0;}
+  .sidebar-link .badge-soon{margin-left:auto; font-size:0.62rem; color:var(--muted); border:1px solid var(--line); padding:2px 6px; border-radius:6px;}
+  .sidebar-divider{height:1px; background:var(--line); margin:10px 18px;}
+  .sidebar-foot{padding:16px 20px; margin-top:auto; border-top:1px solid var(--line);}
+  .sidebar-foot p{font-size:0.7rem; color:var(--muted); line-height:1.5;}
+  .sidebar-foot .signature{color:var(--gold); font-weight:600;}
 
   /* ULTAH BANNER */
   #ultahBanner{
@@ -57,24 +125,40 @@
   @keyframes pulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.2);}}
   #ultahBanner button{background:none; border:none; color:var(--muted); font-size:1rem; cursor:pointer;}
 
-  header.hero{padding:80px 0 66px; text-align:center; border-bottom:1px solid var(--line); position:relative;}
+  header.hero{padding:96px 0 74px; text-align:center; border-bottom:1px solid var(--line); position:relative;}
+  .hero-badge{
+    display:inline-flex; align-items:center; gap:8px; padding:7px 16px; border-radius:30px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.04); backdrop-filter:blur(8px);
+    font-size:0.72rem; letter-spacing:0.05em; color:var(--muted); margin-bottom:22px;
+    opacity:0; animation:fadeUp 0.9s ease forwards;
+  }
+  .hero-badge .dot{width:6px; height:6px; border-radius:50%; background:#ffffff; box-shadow:0 0 8px 2px rgba(255,255,255,0.6); animation:pulseDot 1.8s ease-in-out infinite;}
+  @keyframes pulseDot{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.5; transform:scale(0.8);}}
   .kicker{color:var(--gold); font-size:0.8rem; letter-spacing:0.06em; margin-bottom:16px; opacity:0; animation:fadeUp 0.9s ease forwards;}
-  header.hero h1{font-size:2.35rem; line-height:1.22; margin-bottom:18px; opacity:0; animation:fadeUp 0.9s ease 0.2s forwards;}
+  header.hero h1{
+    font-size:2.6rem; line-height:1.2; margin-bottom:18px; opacity:0; animation:fadeUp 0.9s ease 0.2s forwards;
+    background:linear-gradient(100deg, #ffffff 20%, #9a9a9a 45%, #ffffff 60%, #ffffff 100%);
+    background-size:250% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:fadeUp 0.9s ease 0.2s forwards, shimmerText 6s linear infinite 1.2s;
+  }
+  @keyframes shimmerText{0%{background-position:0% center;} 100%{background-position:-250% center;}}
   header.hero p{color:var(--muted); max-width:480px; margin:0 auto; font-size:1.02rem; opacity:0; animation:fadeUp 0.9s ease 0.4s forwards;}
-  .divider{width:0; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:32px auto 0; animation:drawLine 1.2s ease 0.7s forwards;}
+  .divider{width:0; height:1.5px; background:linear-gradient(90deg, transparent, #ffffff, transparent); margin:34px auto 0; animation:drawLine 1.2s ease 0.7s forwards, shimmerText 3s linear infinite 2s; box-shadow:0 0 12px rgba(255,255,255,0.4);}
   @keyframes drawLine{ to{ width:140px; } }
   @keyframes fadeUp{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);}}
 
-  section{padding:56px 0; border-bottom:1px solid var(--line);}
-  section h2{font-size:1.6rem; margin-bottom:8px;}
-  section .desc{color:var(--muted); margin-bottom:26px; max-width:560px; font-size:0.95rem;}
-  .reveal{opacity:0; transform:translateY(26px); transition:opacity 0.8s ease, transform 0.8s ease;}
-  .reveal.show{opacity:1; transform:translateY(0);}
+  section{padding:60px 0; border-bottom:1px solid var(--line);}
+  section h2{font-size:1.6rem; margin-bottom:6px; position:relative; display:inline-block;}
+  section .desc{color:var(--muted); margin-bottom:30px; max-width:560px; font-size:0.95rem; margin-top:14px;}
+  .reveal{opacity:0; transform:translateY(34px) scale(0.97); filter:blur(6px); transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1), filter 1s ease;}
+  .reveal.show{opacity:1; transform:translateY(0) scale(1); filter:blur(0);}
+  .reveal.show h2::after{width:38px;}
+  section h2::after{content:''; position:absolute; left:0; bottom:-9px; height:2px; width:0; background:linear-gradient(90deg, #ffffff, transparent); transition:width 0.8s cubic-bezier(.16,1,.3,1) 0.3s;}
 
   .profil-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;}
-  .stat-box{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:20px; transition:transform 0.4s cubic-bezier(.4,0,.2,1), border-color 0.4s ease, box-shadow 0.4s ease; opacity:0; transform:translateY(20px);}
+  .stat-box{background:rgba(255,255,255,0.035); backdrop-filter:blur(14px); border:1px solid var(--line); border-radius:14px; padding:20px; transition:transform 0.45s cubic-bezier(.16,1,.3,1), border-color 0.4s ease, box-shadow 0.4s ease; opacity:0; transform:translateY(20px);}
   .stat-box.show{opacity:1; transform:translateY(0);}
-  .stat-box:hover{transform:translateY(-5px); border-color:var(--gold); box-shadow:0 12px 30px -12px rgba(201,162,75,0.25);}
+  .stat-box:hover{transform:translateY(-6px) scale(1.02); border-color:rgba(255,255,255,0.35); box-shadow:0 16px 40px -14px rgba(255,255,255,0.18);}
   .stat-box .num{font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--gold); line-height:1.25;}
   .stat-box .label{color:var(--muted); font-size:0.83rem; margin-top:4px;}
 
@@ -85,13 +169,13 @@
   .jabatan{color:var(--muted); font-size:0.85rem;}
   .nama{font-weight:600;}
 
-  .piket-table{width:100%; border-collapse:collapse; font-size:0.9rem;}
-  .piket-table th, .piket-table td{text-align:left; padding:13px 8px; border-bottom:1px solid var(--line);}
-  .piket-table th{color:var(--gold); font-size:0.78rem; font-weight:600; letter-spacing:0.02em;}
-  .piket-table tbody tr{cursor:pointer; transition:background 0.3s ease;}
-  .piket-table tbody tr:hover{background:var(--gold-soft);}
-  .piket-table tbody tr.today{background:var(--gold-soft); box-shadow:inset 3px 0 0 var(--gold);}
-  .piket-table tbody tr.today td:first-child::after{content:' • Hari ini'; color:var(--gold); font-size:0.72rem;}
+  .piket-day-card{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:10px; cursor:pointer; transition:border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;}
+  .piket-day-card:hover{border-color:rgba(255,255,255,0.35); transform:translateY(-3px); box-shadow:0 14px 30px -16px rgba(255,255,255,0.15);}
+  .piket-day-card.today{background:var(--gold-soft); border-color:var(--gold); box-shadow:inset 3px 0 0 var(--gold);}
+  .piket-day-head{font-family:'Playfair Display',serif; font-weight:700; font-size:1.02rem; margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .piket-day-card.today .piket-day-head::after{content:'Hari ini'; font-family:'Inter',sans-serif; font-weight:600; font-size:0.65rem; color:var(--gold); background:rgba(201,162,75,0.15); padding:3px 8px; border-radius:6px;}
+  .piket-names{display:flex; flex-wrap:wrap; gap:7px;}
+  .piket-chip{background:var(--bg-panel2); border:1px solid var(--line); color:var(--text); font-size:0.82rem; padding:5px 11px; border-radius:20px;}
 
   .biodata-toolbar{display:flex; gap:10px; margin-bottom:18px;}
   .biodata-toolbar input{flex:1; background:var(--bg-panel); border:1px solid var(--line); color:var(--text); padding:11px 14px; border-radius:9px; font-size:0.9rem; outline:none; transition:border-color 0.3s ease;}
@@ -111,12 +195,13 @@
     position:relative;
   }
   .id-card.show{opacity:1; transform:translateY(0);}
-  .id-card:hover{transform:translateY(-4px); border-color:var(--gold); box-shadow:0 14px 28px -14px rgba(201,162,75,0.3);}
-  .id-card::before{content:''; width:6px; flex-shrink:0; background:linear-gradient(180deg, var(--gold), var(--teal));}
+  .id-card:hover{transform:translateY(-5px) scale(1.015); border-color:rgba(255,255,255,0.35); box-shadow:0 18px 36px -16px rgba(255,255,255,0.2);}
+  .id-card::before{content:''; width:6px; flex-shrink:0; background:linear-gradient(180deg, #ffffff, #000000);}
   .id-photo{
     width:56px; height:56px; border-radius:9px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-family:'Playfair Display',serif; font-weight:700; color:var(--bg); font-size:1.15rem;
+    font-family:'Playfair Display',serif; font-weight:700; color:#ffffff; font-size:1.15rem;
+    text-shadow:0 1px 3px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);
     margin:14px 0 14px 14px;
   }
   .id-info{padding:12px 14px; flex:1; min-width:0;}
@@ -130,7 +215,7 @@
   .galeri-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;}
   .galeri-item{aspect-ratio:1/1; background:var(--bg-panel); border:1px dashed var(--line); border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem; text-align:center; padding:8px; cursor:pointer; transition:border-color 0.4s ease, transform 0.4s ease; opacity:0; transform:scale(0.9); overflow:hidden; position:relative;}
   .galeri-item.show{opacity:1; transform:scale(1);}
-  .galeri-item:hover{border-color:var(--gold); transform:scale(1.04);}
+  .galeri-item:hover{border-color:rgba(255,255,255,0.4); transform:scale(1.06); box-shadow:0 14px 30px -14px rgba(255,255,255,0.2);}
   .galeri-item img, .galeri-item video{width:100%; height:100%; object-fit:cover;}
   .galeri-item .vid-badge{position:absolute; bottom:5px; right:6px; font-size:0.65rem; background:rgba(11,13,18,0.7); padding:2px 6px; border-radius:5px;}
 
@@ -180,7 +265,7 @@
   /* CETAK KENANGAN */
   .cetak-toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:18px;}
   .cetak-btn{display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:var(--bg); border:none; padding:11px 18px; border-radius:9px; font-size:0.87rem; font-weight:600; cursor:pointer; transition:transform 0.25s ease, box-shadow 0.25s ease;}
-  .cetak-btn:hover{transform:translateY(-2px); box-shadow:0 10px 22px -10px rgba(201,162,75,0.5);}
+  .cetak-btn:hover{transform:translateY(-2px) scale(1.02); box-shadow:0 12px 26px -10px rgba(255,255,255,0.4);}
   .cetak-select-count{font-size:0.82rem; color:var(--muted);}
   .cetak-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;}
   .cetak-item{aspect-ratio:1/1; border-radius:10px; overflow:hidden; position:relative; cursor:pointer; border:2px solid transparent; opacity:0; transform:scale(0.92); transition:opacity 0.6s ease, transform 0.6s ease, border-color 0.25s ease;}
@@ -200,7 +285,7 @@
   .modal-overlay.show{opacity:1; pointer-events:auto;}
   .modal-box{background:var(--bg-panel2); border:1px solid var(--line); border-radius:16px; padding:26px; max-width:340px; width:100%; text-align:center; transform:translateY(16px) scale(0.97); transition:transform 0.35s ease; max-height:85vh; overflow-y:auto;}
   .modal-overlay.show .modal-box{transform:translateY(0) scale(1);}
-  .modal-avatar{width:74px; height:74px; border-radius:14px; margin:0 auto 14px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700; color:var(--bg); font-size:1.5rem; overflow:hidden;}
+  .modal-avatar{width:74px; height:74px; border-radius:14px; margin:0 auto 14px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700; color:#ffffff; text-shadow:0 1px 3px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); font-size:1.5rem; overflow:hidden;}
   .modal-avatar img{width:100%; height:100%; object-fit:cover;}
   .modal-box h3{font-size:1.2rem; margin-bottom:4px;}
   .modal-box .peran{color:var(--gold); font-size:0.85rem; margin-bottom:14px;}
@@ -239,29 +324,81 @@
 </head>
 <body>
 
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-avatar"></div>
+    <div class="school">SMK PAB 8 SAMPALI</div>
+    <h1>XII <em style="color:var(--gold); font-style:normal;">TKJ 1</em></h1>
+    <p class="sub">Masukkan PIN untuk membuka website kelas</p>
+    <input type="password" id="lockInput" class="lock-input" inputmode="numeric" maxlength="8" placeholder="••••">
+    <div class="lock-error" id="lockError"></div>
+    <button class="lock-btn" id="lockSubmit">Masuk</button>
+    <p class="lock-note">Website internal kelas XII TKJ 1 — PIN dibagikan oleh pengurus kelas.</p>
+  </div>
+</div>
+
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="grain"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
 <div class="spotlight" id="spotlight"></div>
 
 <nav>
   <div class="wrap">
+    <button class="hamburger" id="sidebarToggle" aria-label="Buka menu">☰</button>
     <div class="brand">XII <em>TKJ 1</em></div>
-    <ul id="navList">
-      <li><a href="#profil">Profil</a></li>
-      <li><a href="#struktur">Struktur</a></li>
-      <li><a href="#piket">Piket</a></li>
-      <li><a href="#biodata">Biodata</a></li>
-      <li><a href="#galeri">Galeri</a></li>
-      <li><a href="#kegiatan">Kegiatan</a></li>
-      <li><a href="#kenangan">Kenangan</a></li>
-    </ul>
+    <div style="width:40px;"></div>
   </div>
 </nav>
+
+<div id="sidebarOverlay"></div>
+<aside id="sidebar">
+  <div class="sidebar-head">
+    <label class="sidebar-avatar" id="sidebarAvatar" for="avatarUpload">
+      <span class="cam-badge">📷</span>
+      <input type="file" id="avatarUpload" accept="image/*">
+    </label>
+    <div>
+      <div class="school">SMK PAB 8 SAMPALI</div>
+      <div class="kelas">XII TKJ 1</div>
+    </div>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Tutup menu">✕</button>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Menu Kelas</div>
+    <a class="sidebar-link nav-anchor" href="#profil"><span class="sic">👤</span>Profil</a>
+    <a class="sidebar-link nav-anchor" href="#struktur"><span class="sic">🧩</span>Struktur Kelas</a>
+    <a class="sidebar-link nav-anchor" href="#piket"><span class="sic">🧹</span>Struktur Piket</a>
+    <a class="sidebar-link nav-anchor" href="#biodata"><span class="sic">🪪</span>Biodata</a>
+    <a class="sidebar-link nav-anchor" href="#galeri"><span class="sic">🖼️</span>Galeri</a>
+    <a class="sidebar-link nav-anchor" href="#kegiatan"><span class="sic">📅</span>Kegiatan</a>
+    <a class="sidebar-link nav-anchor" href="#kenangan"><span class="sic">🖨️</span>Cetak Kenangan</a>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Fitur Sekolah</div>
+    <div class="sidebar-link soon-link"><span class="sic">🗓️</span>Jadwal Pelajaran<span class="badge-soon">Segera</span></div>
+    <div class="sidebar-link soon-link"><span class="sic">📝</span>Nilai &amp; Rapor<span class="badge-soon">Segera</span></div>
+    <div class="sidebar-link soon-link"><span class="sic">📢</span>Pengumuman<span class="badge-soon">Segera</span></div>
+    <div class="sidebar-link soon-link"><span class="sic">📚</span>Perpustakaan<span class="badge-soon">Segera</span></div>
+    <div class="sidebar-link soon-link"><span class="sic">✅</span>Absensi<span class="badge-soon">Segera</span></div>
+  </div>
+
+  <div class="sidebar-foot">
+    <p>&copy; 2026 XII TKJ 1<br>SMK PAB 8 Sampali</p>
+    <p style="margin-top:8px;">Dibuat oleh<br><span class="signature">M. Raihan Aristo Sulaiman Siregar</span></p>
+  </div>
+</aside>
 
 <div id="ultahBanner"><div class="wrap"><p id="ultahText"><span class="emoji">🎉</span> </p><button id="ultahClose">✕</button></div></div>
 
 <header class="hero">
   <div class="wrap">
+    <div class="hero-badge"><span class="dot"></span>Website resmi kelas · Tahun ajaran 2026</div>
     <div class="kicker">Teknik Komputer dan Jaringan · SMK PAB 8 Sampali</div>
     <h1>Selamat Datang di Website XII TKJ 1</h1>
     <p>Halaman resmi kelas XII TKJ 1 — profil kelas, struktur organisasi, jadwal piket, biodata anggota, dan dokumentasi kegiatan.</p>
@@ -274,7 +411,7 @@
     <h2>Profil Kelas</h2>
     <p class="desc">Data umum kelas XII TKJ 1.</p>
     <div class="profil-grid">
-      <div class="stat-box" style="transition-delay:0s"><div class="num" data-count="30">0</div><div class="label">Jumlah siswa</div></div>
+      <div class="stat-box" style="transition-delay:0s"><div class="num" data-count="31">0</div><div class="label">Jumlah siswa</div></div>
       <div class="stat-box" style="transition-delay:0.1s"><div class="num">2026</div><div class="label">Tahun ajaran</div></div>
       <div class="stat-box" style="transition-delay:0.2s"><div class="num" style="font-size:1.05rem;">SMK PAB 8 Sampali</div><div class="label">Nama sekolah</div></div>
       <div class="stat-box" style="transition-delay:0.3s"><div class="num">TKJ</div><div class="label">Jurusan</div></div>
@@ -289,7 +426,7 @@
     <ul class="struktur-list">
       <li style="transition-delay:0s"><span class="nama">Elly Nurmaikha</span><span class="jabatan">Wali Kelas</span></li>
       <li style="transition-delay:0.1s"><span class="nama">Muhammad Pamuji</span><span class="jabatan">Ketua Kelas</span></li>
-      <li style="transition-delay:0.2s"><span class="nama">Nova</span><span class="jabatan">Sekretaris</span></li>
+      <li style="transition-delay:0.2s"><span class="nama">Nova Refina</span><span class="jabatan">Sekretaris</span></li>
     </ul>
   </div>
 </section>
@@ -297,18 +434,33 @@
 <section id="piket" class="reveal">
   <div class="wrap">
     <h2>Struktur Piket</h2>
-    <p class="desc">Jadwal piket harian kelas — tap satu baris untuk menyorotnya. Baris hari ini otomatis ditandai.</p>
-    <table class="piket-table">
-      <thead><tr><th>Hari</th><th>Nama Petugas Piket</th></tr></thead>
-      <tbody id="piketBody">
-        <tr data-day="Senin"><td>Senin</td><td>Nama 1, Nama 2</td></tr>
-        <tr data-day="Selasa"><td>Selasa</td><td>Nama 3, Nama 4</td></tr>
-        <tr data-day="Rabu"><td>Rabu</td><td>Nama 5, Nama 6</td></tr>
-        <tr data-day="Kamis"><td>Kamis</td><td>Nama 7, Nama 8</td></tr>
-        <tr data-day="Jumat"><td>Jumat</td><td>Nama 9, Nama 10</td></tr>
-        <tr data-day="Sabtu"><td>Sabtu</td><td>Nama 11, Nama 12</td></tr>
-      </tbody>
-    </table>
+    <p class="desc">Jadwal piket harian kelas — tap satu kartu untuk menyorotnya. Kartu hari ini otomatis ditandai.</p>
+    <div id="piketBody">
+      <div class="piket-day-card" data-day="Senin">
+        <div class="piket-day-head">Senin</div>
+        <div class="piket-names"><span class="piket-chip">Al Fazri</span><span class="piket-chip">Mhd. Farel</span><span class="piket-chip">Rizki Ananda</span><span class="piket-chip">Yuka Alfira</span><span class="piket-chip">Nova Refina</span></div>
+      </div>
+      <div class="piket-day-card" data-day="Selasa">
+        <div class="piket-day-head">Selasa</div>
+        <div class="piket-names"><span class="piket-chip">Denni</span><span class="piket-chip">M. Raihan</span><span class="piket-chip">Reyhan Emeraldi</span><span class="piket-chip">Pebyani</span><span class="piket-chip">Aprilia</span></div>
+      </div>
+      <div class="piket-day-card" data-day="Rabu">
+        <div class="piket-day-head">Rabu</div>
+        <div class="piket-names"><span class="piket-chip">Fahrezi</span><span class="piket-chip">M. Radit</span><span class="piket-chip">Raffa Rizki</span><span class="piket-chip">Satya El</span><span class="piket-chip">Melinda</span></div>
+      </div>
+      <div class="piket-day-card" data-day="Kamis">
+        <div class="piket-day-head">Kamis</div>
+        <div class="piket-names"><span class="piket-chip">Fathir</span><span class="piket-chip">Josy Kirana</span><span class="piket-chip">Muhammad Rizky</span><span class="piket-chip">Sigith</span><span class="piket-chip">Siti Mahfuza</span></div>
+      </div>
+      <div class="piket-day-card" data-day="Jumat">
+        <div class="piket-day-head">Jumat</div>
+        <div class="piket-names"><span class="piket-chip">Hayyu</span><span class="piket-chip">Leo Natta</span><span class="piket-chip">Muhammad Pamuji</span><span class="piket-chip">Syafira Allafa</span><span class="piket-chip">Nazwa</span></div>
+      </div>
+      <div class="piket-day-card" data-day="Sabtu">
+        <div class="piket-day-head">Sabtu</div>
+        <div class="piket-names"><span class="piket-chip">Herdian</span><span class="piket-chip">Ical</span><span class="piket-chip">Mhd. Tajul</span><span class="piket-chip">Wildan</span><span class="piket-chip">Zhyo Agustin</span><span class="piket-chip">Nayla</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -379,7 +531,8 @@
 
 <footer>
   <div class="wrap">
-    <p>&copy; 2026 XII TKJ 1 — SMK PAB 8 Sampali. Dibuat dengan HTML &amp; CSS.</p>
+    <p>&copy; 2026 XII TKJ 1 — SMK PAB 8 Sampali</p>
+    <p style="margin-top:6px; color:var(--gold);">Dibuat oleh M. Raihan Aristo Sulaiman Siregar</p>
   </div>
 </footer>
 
@@ -397,28 +550,27 @@
 </div>
 
 <script>
-  const gradients = ['linear-gradient(135deg,#c9a24b,#6f9c93)','linear-gradient(135deg,#6f9c93,#c9a24b)','linear-gradient(135deg,#b98a6b,#c9a24b)','linear-gradient(135deg,#c9a24b,#8a7bb0)'];
+  const gradients = ['linear-gradient(135deg,#ffffff,#000000)','linear-gradient(135deg,#000000,#ffffff)','linear-gradient(135deg,#e0e0e0,#1a1a1a)','linear-gradient(135deg,#ffffff,#4d4d4d)'];
 
-  /* ---- 30 data siswa ---- */
-  /* tanggal_lahir format: "DD/MM/YYYY". Contoh Beni sengaja dibuat ulang tahun hari ini (05/09) untuk demo notifikasi. */
-  const namaKhusus = {
-    1:['Elly Nurmaikha','Wali Kelas','01/01/1990'],
-    2:['Muhammad Pamuji','Ketua Kelas','12/03/2009'],
-    3:['Nova','Sekretaris','20/07/2009'],
-    4:['Beni','Anggota','05/09/2009']
-  };
-  const students = [];
-  for(let i=1;i<=30;i++){
-    const k = namaKhusus[i];
-    students.push({
-      id:i,
-      nama: k ? k[0] : 'Nama Siswa ' + i,
-      peran: k ? k[1] : 'Anggota',
-      tanggal_lahir: k ? k[2] : '01/01/2009',
-      alamat: 'Ganti alamat',
-      hobi: 'Ganti hobi'
-    });
-  }
+  /* ---- Data siswa (nama absen sesuai jadwal piket) ---- */
+  /* tanggal_lahir format: "DD/MM/YYYY" — silakan isi tanggal lahir asli tiap siswa di sini. */
+  const namaSiswa = [
+    'Al Fazri','Mhd. Farel','Rizki Ananda','Yuka Alfira','Nova Refina',
+    'Denni','M. Raihan','Reyhan Emeraldi','Pebyani','Aprilia',
+    'Fahrezi','M. Radit','Raffa Rizki','Satya El','Melinda',
+    'Fathir','Josy Kirana','Muhammad Rizky','Sigith','Siti Mahfuza',
+    'Hayyu','Leo Natta','Muhammad Pamuji','Syafira Allafa','Nazwa',
+    'Herdian','Ical','Mhd. Tajul','Wildan','Zhyo Agustin','Nayla'
+  ];
+  const peranKhusus = { 'Muhammad Pamuji':'Ketua Kelas', 'Nova Refina':'Sekretaris' };
+  const students = namaSiswa.map((nama, idx) => ({
+    id: idx + 1,
+    nama: nama,
+    peran: peranKhusus[nama] || 'Anggota',
+    tanggal_lahir: '01/01/2009',
+    alamat: 'Ganti alamat',
+    hobi: 'Ganti hobi'
+  }));
 
   function parseTgl(str){
     const [d,m,y] = str.split('/').map(Number);
@@ -520,7 +672,7 @@
 
   const hariList = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const todayName = hariList[new Date().getDay()];
-  document.querySelectorAll('#piketBody tr').forEach(row => {
+  document.querySelectorAll('#piketBody .piket-day-card').forEach(row => {
     if(row.dataset.day === todayName) row.classList.add('today');
     row.addEventListener('click', () => row.classList.toggle('today'));
   });
@@ -529,6 +681,13 @@
   document.addEventListener('mousemove', (e) => {
     spot.style.setProperty('--x', e.clientX + 'px');
     spot.style.setProperty('--y', e.clientY + 'px');
+  });
+
+  const scrollProgress = document.getElementById('scrollProgress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    scrollProgress.style.width = scrolled + '%';
   });
 
   /* =========================================================
@@ -625,11 +784,11 @@
           <div class="kegiatan-body-inner">
             <p>${k.deskripsi}</p>
             <div class="upload-box" data-kid="${k.id}">
-              <label class="upload-label">
+              <label class="upload-label" for="fileUpload-${k.id}">
                 <span class="ico">📷</span>
                 <span><strong>Unggah foto / video</strong><br>Tap untuk pilih file, atau seret file ke sini</span>
               </label>
-              <input type="file" accept="image/*,video/*" multiple>
+              <input type="file" id="fileUpload-${k.id}" accept="image/*,video/*" multiple>
               <div class="upload-thumbs"></div>
               <div class="upload-note">Pratinjau tersimpan untuk sesi browser ini saja.</div>
             </div>
@@ -646,7 +805,7 @@
       const label = item.querySelector('.upload-label');
       const thumbsEl = item.querySelector('.upload-thumbs');
 
-      label.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
+      label.addEventListener('click', (e) => e.stopPropagation());
       fileInput.addEventListener('click', (e) => e.stopPropagation());
       fileInput.addEventListener('change', (e) => handleFiles(e.target.files, k, thumbsEl));
 
@@ -774,16 +933,40 @@
     counterObserver.observe(counter);
   }
 
-  const navLinks = document.querySelectorAll('#navList a');
+  const navLinks = document.querySelectorAll('.nav-anchor');
   const sections = document.querySelectorAll('section[id]');
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      const link = document.querySelector('#navList a[href="#' + entry.target.id + '"]');
+      const link = document.querySelector('.nav-anchor[href="#' + entry.target.id + '"]');
       if(!link) return;
       if(entry.isIntersecting){ navLinks.forEach(l => l.classList.remove('active')); link.classList.add('active'); }
     });
   }, { threshold: 0.5 });
   sections.forEach(sec => navObserver.observe(sec));
+
+  /* SIDEBAR toggle */
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  function openSidebar(){ sidebar.classList.add('show'); sidebarOverlay.classList.add('show'); }
+  function closeSidebar(){ sidebar.classList.remove('show'); sidebarOverlay.classList.remove('show'); }
+  document.getElementById('sidebarToggle').addEventListener('click', openSidebar);
+  document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
+  sidebarOverlay.addEventListener('click', closeSidebar);
+  navLinks.forEach(link => link.addEventListener('click', closeSidebar));
+
+  document.querySelectorAll('.soon-link').forEach(item => {
+    item.addEventListener('click', () => {
+      closeSidebar();
+      modalBox.innerHTML = `
+        <div class="modal-avatar" style="background:linear-gradient(135deg,#c9a24b,#6f9c93); font-size:1.3rem;">🚧</div>
+        <h3>Segera Hadir</h3>
+        <div class="peran">Fitur ini sedang dalam pengembangan</div>
+        <button class="modal-close" id="modalCloseBtn">Tutup</button>
+      `;
+      overlay.classList.add('show');
+      document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    });
+  });
 
   const backTop = document.getElementById('backTop');
   window.addEventListener('scroll', () => {
@@ -803,7 +986,59 @@
   document.getElementById('ultahClose').addEventListener('click', () => banner.classList.remove('show'));
 
   renderBiodata(students);
+
+  /* =========================================================
+     LOCK SCREEN — PIN masuk website
+     Ganti nilai SITE_PIN di bawah ini untuk mengubah PIN.
+     ========================================================= */
+  const SITE_PIN = '121212';
+  const lockScreen = document.getElementById('lockScreen');
+  const lockInput = document.getElementById('lockInput');
+  const lockError = document.getElementById('lockError');
+  const lockSubmit = document.getElementById('lockSubmit');
+
+  if(localStorage.getItem('siteUnlocked') === 'yes'){
+    lockScreen.classList.add('hide');
+  }
+
+  function cobaMasuk(){
+    if(lockInput.value === SITE_PIN){
+      localStorage.setItem('siteUnlocked', 'yes');
+      lockScreen.classList.add('hide');
+      lockError.textContent = '';
+    } else {
+      lockError.textContent = 'PIN salah, coba lagi.';
+      lockInput.classList.remove('shake');
+      void lockInput.offsetWidth;
+      lockInput.classList.add('shake');
+      lockInput.value = '';
+    }
+  }
+  lockSubmit.addEventListener('click', cobaMasuk);
+  lockInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') cobaMasuk(); });
+
+  /* =========================================================
+     FOTO PROFIL SIDEBAR — bisa diganti dengan foto sendiri
+     Pratinjau tersimpan di localStorage browser (bertahan walau di-refresh).
+     ========================================================= */
+  const sidebarAvatar = document.getElementById('sidebarAvatar');
+  const avatarUpload = document.getElementById('avatarUpload');
+  const savedAvatar = localStorage.getItem('profilePhoto');
+  if(savedAvatar){ sidebarAvatar.style.backgroundImage = `url(${savedAvatar})`; }
+
+  avatarUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      sidebarAvatar.style.backgroundImage = `url(${ev.target.result})`;
+      try{ localStorage.setItem('profilePhoto', ev.target.result); }catch(err){ /* penyimpanan penuh, abaikan */ }
+    };
+    reader.readAsDataURL(file);
+  });
+
 </script>
 
 </body>
 </html>
+ 
