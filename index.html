@@ -375,6 +375,7 @@
     <a class="sidebar-link nav-anchor" href="#galeri"><span class="sic">🖼️</span>Galeri</a>
     <a class="sidebar-link nav-anchor" href="#kegiatan"><span class="sic">📅</span>Kegiatan</a>
     <a class="sidebar-link nav-anchor" href="#kenangan"><span class="sic">🖨️</span>Cetak Kenangan</a>
+    <a class="sidebar-link nav-anchor" href="#qna"><span class="sic">🎮</span>Game QnA</a>
   </div>
 
   <div class="sidebar-divider"></div>
@@ -526,6 +527,31 @@
     </div>
     <div class="cetak-grid" id="cetakGrid"></div>
     <p class="cetak-empty" id="cetakEmpty">Belum ada foto. Unggah foto di bagian Kegiatan terlebih dahulu.</p>
+  </div>
+</section>
+
+<section id="qna" class="reveal">
+  <div class="wrap">
+    <h2>Game QnA</h2>
+    <p class="desc">Main tanya-jawab seru bareng teman sekelas. Daftar, login, dan lempar pertanyaan di halaman Game QnA — pratinjau pertanyaan terbaru juga tampil di sini.</p>
+
+    <style>
+      .qna-status{font-size:0.85rem; color:var(--muted); margin-bottom:16px;}
+      .qna-cta{display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:var(--bg); border:none; padding:11px 18px; border-radius:9px; font-size:0.87rem; font-weight:600; margin-bottom:24px; text-decoration:none; transition:transform 0.25s ease, box-shadow 0.25s ease;}
+      .qna-cta:hover{transform:translateY(-2px) scale(1.02); box-shadow:0 12px 26px -10px rgba(255,255,255,0.4);}
+      .qna-item{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:12px;}
+      .qna-q{font-weight:600; font-size:0.95rem;}
+      .qna-meta{font-size:0.72rem; color:var(--muted); margin-top:4px;}
+      .qna-answers{margin-top:10px; padding-left:12px; border-left:2px solid var(--line);}
+      .qna-a{font-size:0.85rem; margin:6px 0;}
+      .qna-a b{color:var(--gold);}
+      .qna-empty{color:var(--muted); text-align:center; padding:24px 0; font-size:0.9rem;}
+    </style>
+
+    <div class="qna-status" id="qnaStatus">Memuat status...</div>
+    <a class="qna-cta" href="qna.html">🎮 Main / Login Game QnA</a>
+
+    <div id="qnaPreviewList"></div>
   </div>
 </section>
 
@@ -1037,8 +1063,55 @@
     reader.readAsDataURL(file);
   });
 
+  /* =========================================================
+     GAME QNA — pratinjau pertanyaan terbaru di web kelas
+     Membaca localStorage yang sama dengan qna.html
+     ========================================================= */
+  function renderQnaRead(){
+    const QNA_QUESTIONS_KEY = "tkj1_qna_questions";
+    const QNA_SESSION_KEY = "tkj1_qna_session";
+    const wrap = document.getElementById('qnaPreviewList');
+    const statusEl = document.getElementById('qnaStatus');
+    if(!wrap || !statusEl) return;
+
+    let session = null;
+    try{ session = JSON.parse(localStorage.getItem(QNA_SESSION_KEY) || "null"); }catch(e){ session = null; }
+    statusEl.textContent = (session && session.name)
+      ? "Masuk sebagai " + session.name + " di Game QnA."
+      : "Kamu belum login di Game QnA — tap tombol di bawah untuk mulai.";
+
+    let questions = [];
+    try{ questions = JSON.parse(localStorage.getItem(QNA_QUESTIONS_KEY) || "[]"); }catch(e){ questions = []; }
+
+    if(questions.length === 0){
+      wrap.innerHTML = '<p class="qna-empty">Belum ada pertanyaan. Jadi yang pertama main di Game QnA!</p>';
+      return;
+    }
+
+    const escQna = (str) => {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    };
+
+    wrap.innerHTML = questions.slice(0, 5).map(q => `
+      <div class="qna-item">
+        <div class="qna-q">${escQna(q.text)}</div>
+        <div class="qna-meta">ditanya oleh ${escQna(q.author)} · ${escQna(q.time)}</div>
+        <div class="qna-answers">
+          ${q.answers && q.answers.length
+            ? q.answers.map(a => `<div class="qna-a"><b>${escQna(a.author)}:</b> ${escQna(a.text)}</div>`).join("")
+            : '<div class="qna-a" style="color:var(--muted);">Belum ada jawaban.</div>'}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  renderQnaRead();
+  window.addEventListener('storage', renderQnaRead);
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) renderQnaRead(); });
+
 </script>
 
 </body>
 </html>
- 
